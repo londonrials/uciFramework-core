@@ -14,6 +14,8 @@ Make sure to restart the resource after making changes to this file to ensure th
 
 -- Load configuration
 local disableWeaponPickups = Config and Config.DisableWeaponPickups
+local disableWantedSystem = Config and Config.DisableWantedSystem
+local disableWeaponPickups = Config and Config.DisableWeaponPickups
 
 if disableWeaponPickups then
     CreateThread(function()
@@ -49,4 +51,29 @@ function GetNearbyPeds(x, y, z, radius)
     until not success
     EndFindPed(handle)
     return peds
+end
+
+if disableWantedSystem then
+    CreateThread(function()
+        -- Get the current player ID.
+        local playerId = PlayerId()
+
+        -- Prevent the wanted level from ever increasing above 0.
+        SetMaxWantedLevel(0)
+
+        -- Disable police dispatches for the player.
+        SetPoliceIgnorePlayer(playerId, true)
+        SetDispatchCopsForPlayer(playerId, false)
+
+        -- Continuous loop to ensure the player remains wanted-level free.
+        while true do
+            Wait(1)
+
+            -- If, for any reason, the player’s wanted level goes above 0, clear it.
+            if GetPlayerWantedLevel(playerId) > 0 then
+                ClearPlayerWantedLevel(playerId)
+                SetPlayerWantedLevelNow(playerId, false)
+            end
+        end
+    end)
 end

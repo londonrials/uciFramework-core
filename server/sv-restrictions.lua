@@ -11,6 +11,7 @@ Make sure to restart the resource after making changes to this file to ensure th
 /stop uciFramework-core -> /start uciFramework-core
 
 ]]-------------------------------------------------------------------------------------------------------
+
 -- Load configuration
 local disableWeaponPickups = Config and Config.DisableWeaponPickups
 

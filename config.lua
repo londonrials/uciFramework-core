@@ -18,3 +18,6 @@ Config = {}
 
 -- [Default = true] Set to false to disable weapon pickups.
 Config.DisableWeaponPickups = true
+
+-- [Default = true] Set to false to disable the wanted system.
+Config.DisableWantedSystem = true
