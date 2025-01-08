@@ -17,6 +17,8 @@ local disableWeaponPickups = Config and Config.DisableWeaponPickups
 local disableWantedSystem = Config and Config.DisableWantedSystem
 local disablePoliceSpawning = Config and Config.DisablePoliceSpawning
 local disableEmsSpawning = Config and Config.DisableEmsSpawning
+local enableDoubleJumpNerf = Config and Config.EnableDoubleJumpNerf
+local doubleJumpTimeoutSeconds = Config and Config.DoubleJumpTimeoutSeconds
 
 if disableWeaponPickups then
     CreateThread(function()
