@@ -4,7 +4,7 @@ game 'gta5'
 
 -- Resource Metadata
 name 'UCI Framework Core'
-description 'Contains core materials for the overall UCI Framework bundle.' 
+description 'Core materials for the UCI Framework.'
 author 'London Rials'
 version '1.0.0'
 
