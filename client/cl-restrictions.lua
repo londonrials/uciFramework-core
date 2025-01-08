@@ -16,6 +16,7 @@ Make sure to restart the resource after making changes to this file to ensure th
 local disableWeaponPickups = Config and Config.DisableWeaponPickups
 local disableWantedSystem = Config and Config.DisableWantedSystem
 local disablePoliceSpawning = Config and Config.DisablePoliceSpawning
+local disableEmsSpawning = Config and Config.DisableEmsSpawning
 
 if disableWeaponPickups then
     CreateThread(function()
@@ -113,5 +114,69 @@ if disablePoliceSpawning then
             SetCreateRandomCopsNotOnScenarios(false)
             SetCreateRandomCopsOnScenarios(false)
         end
+    end)
+end
+
+-- Disable random EMS peds & their vehicles if configured
+    if disableEmsSpawning then CreateThread(function() -- Disable the "Ambulance" dispatch service (service ID 5) EnableDispatchService(5, false)
+
+        -- Optionally disable "Fire Dept" dispatch service (service ID 3) if you wish
+        EnableDispatchService(3, false)
+
+        -- Suppress paramedic ped models
+        local suppressedEmsPeds = {
+            GetHashKey("S_M_M_Paramedic_01")  -- Example paramedic ped model
+            -- Add more if needed
+        }
+
+        -- Suppress EMS/ambulance vehicle models
+        local suppressedEmsVehicles = {
+            GetHashKey("ambulance"),
+            GetHashKey("firetruk") -- Some servers block firetruk if misused
+            -- Add more if needed
+        }
+
+        for _, pedModel in ipairs(suppressedEmsPeds) do
+            SetPedModelIsSuppressed(pedModel, true)
+        end
+
+        for _, vehModel in ipairs(suppressedEmsVehicles) do
+            SetVehicleModelIsSuppressed(vehModel, true)
+        end
+
+        while true do
+            -- Re-apply settings periodically in case other game scripts re-enable them
+            Wait(1000)  -- 1-second interval; adjust if needed
+            
+            EnableDispatchService(5, false)
+            -- EnableDispatchService(3, false)  -- If you also need fires disabled
+
+            for _, pedModel in ipairs(suppressedEmsPeds) do
+                SetPedModelIsSuppressed(pedModel, true)
+            end
+
+            for _, vehModel in ipairs(suppressedEmsVehicles) do
+                SetVehicleModelIsSuppressed(vehModel, true)
+            end
+        end
+    end)
+end
+
+if enableDoubleJumpNerf then 
+    CreateThread(function() local jumpControl = 22 -- Default jump control is key code 22 (spacebar) 
+        local lastJumpTime = 0 -- Tracks the timestamp of the most recent jump
+        while true do
+                Wait(0)
+                -- Check if the jump key was just pressed
+                if IsControlJustPressed(0, jumpControl) then
+                    local now = GetGameTimer()
+                    -- If the time since last jump is less than or equal to our timeout (in ms), ragdoll the player
+                    if (now - lastJumpTime) <= (doubleJumpTimeoutSeconds * 1000) then
+                        SetPedToRagdoll(PlayerPedId(), 2000, 2000, 0, false, false, false)
+                    end
+                    -- Update jump time
+                    lastJumpTime = now
+                end
+            end
     end)
 end

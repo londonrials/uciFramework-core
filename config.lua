@@ -16,11 +16,22 @@ Config = {}
 
 ------ World Restrictions
 
--- [Default = true] Set to false to disable weapon pickups.
+-- [Default = true] Set to false to enable weapon pickups.
 Config.DisableWeaponPickups = true
 
--- [Default = true] Set to false to disable the wanted system.
+-- [Default = true] Set to false to enable the wanted system.
 Config.DisableWantedSystem = true
 
--- [Default = true] Set to false to disable the spawn of police offcers and police vehicles.
+-- [Default = true] Set to false to enable the spawn of police offcers and police vehicles.
 Config.DisablePoliceSpawning = true
+
+-- [Default = true] Set to false to enable the spawn of medical personnel and medical vehicles.
+Config.DisableEmsSpawning = true
+
+------ Player Restrictions
+
+-- [Default = true] Set to false to enable the ability for players to double jump.
+Config.EnableDoubleJumpNerf = true
+
+-- [Default = 2.0] Set the amount of seconds between jumps before the second jump is considered "too soon".
+Config.DoubleJumpTimeoutSeconds = 2.0
