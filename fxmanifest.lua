@@ -10,12 +10,14 @@ version '1.0.0'
 
 -- Client Side Scripts
 client_scripts {
-    --'client/cl-restrictions.lua'
+    'config.lua',
+    'client/cl-restrictions.lua'
 }
 
 -- Server Side Scripts
 server_scripts {
-    'server/sv-restrictions.lua'
+    'config.lua',
+    --'server/sv-restrictions.lua'
 }
 
 -- Shared Scripts

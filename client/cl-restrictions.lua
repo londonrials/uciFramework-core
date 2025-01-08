@@ -12,43 +12,41 @@ Make sure to restart the resource after making changes to this file to ensure th
 
 ]]-------------------------------------------------------------------------------------------------------
 
--- Loads config file
+-- Load configuration
 local disableWeaponPickups = Config and Config.DisableWeaponPickups
 
----------------------------------------------------------------------------------------------------------
-
--- Function to Disable Weapon Pickups
 if disableWeaponPickups then
     CreateThread(function()
         while true do
-            Wait(0) -- Loop continuously to monitor dropped weapons
+            Wait(0)
 
-            -- Iterate through all objects in the world
-            for object in EnumerateObjects() do
-                if IsWeaponPickup(object) then
-                    -- Delete the weapon pickup
-                    RemovePickup(object)
+            -- Check for all nearby ped deaths
+            local playerPed = PlayerPedId()
+            local coords = GetEntityCoords(playerPed)
+            local nearbyPeds = GetNearbyPeds(coords.x, coords.y, coords.z, 50.0) -- Adjust range as needed
+
+            for _, ped in ipairs(nearbyPeds) do
+                if IsPedDeadOrDying(ped, true) then
+                    -- Remove all weapons to prevent drop
+                    RemoveAllPedWeapons(ped, true)
                 end
             end
         end
     end)
 end
 
--- Helper function to enumerate objects in the world
-function EnumerateObjects()
-    return coroutine.wrap(function()
-        local handle, object = FindFirstObject()
-        local success
-        repeat
-            coroutine.yield(object)
-            success, object = FindNextObject(handle)
-        until not success
-        EndFindObject(handle)
-    end)
-end
-
--- Helper function to check if an object is a weapon pickup
-function IsWeaponPickup(object)
-    local model = GetEntityModel(object)
-    return IsPickupWeapon(model)
+-- Helper function to get nearby peds
+function GetNearbyPeds(x, y, z, radius)
+    local peds = {}
+    local handle, ped = FindFirstPed()
+    local success
+    repeat
+        local pedCoords = GetEntityCoords(ped)
+        if #(vector3(x, y, z) - pedCoords) <= radius then
+            table.insert(peds, ped)
+        end
+        success, ped = FindNextPed(handle)
+    until not success
+    EndFindPed(handle)
+    return peds
 end

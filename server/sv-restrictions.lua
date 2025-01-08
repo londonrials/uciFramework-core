@@ -15,17 +15,23 @@ Make sure to restart the resource after making changes to this file to ensure th
 local disableWeaponPickups = Config and Config.DisableWeaponPickups
 
 if disableWeaponPickups then
+    -- Listen for ped deaths to prevent weapon drops
     AddEventHandler('entityCreating', function(entity)
         if DoesEntityExist(entity) and GetEntityType(entity) == 1 then -- Check if it's a ped
             local ped = entity
 
-            -- Delay to ensure ped is properly initialized
+            -- Use a short delay to ensure the ped is initialized
             Wait(500)
 
             if IsPedDeadOrDying(ped, true) then
-                -- Remove weapons from the ped to prevent drops
+                -- Clear weapons from the ped to prevent drops
                 RemoveAllPedWeapons(ped, true)
             end
         end
+    end)
+
+    -- Catch weapon drop attempts
+    AddEventHandler('giveWeaponEvent', function(playerId, data)
+        CancelEvent() -- Prevent the weapon drop from happening
     end)
 end
