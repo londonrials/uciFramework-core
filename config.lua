@@ -21,3 +21,6 @@ Config.DisableWeaponPickups = true
 
 -- [Default = true] Set to false to disable the wanted system.
 Config.DisableWantedSystem = true
+
+-- [Default = true] Set to false to disable the spawn of police offcers and police vehicles.
+Config.DisablePoliceSpawning = true

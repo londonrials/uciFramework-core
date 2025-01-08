@@ -15,7 +15,7 @@ Make sure to restart the resource after making changes to this file to ensure th
 -- Load configuration
 local disableWeaponPickups = Config and Config.DisableWeaponPickups
 local disableWantedSystem = Config and Config.DisableWantedSystem
-local disableWeaponPickups = Config and Config.DisableWeaponPickups
+local disablePoliceSpawning = Config and Config.DisablePoliceSpawning
 
 if disableWeaponPickups then
     CreateThread(function()
@@ -74,6 +74,44 @@ if disableWantedSystem then
                 ClearPlayerWantedLevel(playerId)
                 SetPlayerWantedLevelNow(playerId, false)
             end
+        end
+    end)
+end
+
+-- Disable random cop peds & police vehicles if configured 
+if disablePoliceSpawning then 
+    CreateThread(function()
+        -- Turn off standard random cop scenarios 
+        SetCreateRandomCops(false) 
+        SetCreateRandomCopsNotOnScenarios(false) 
+        SetCreateRandomCopsOnScenarios(false)
+
+        -- Suppress known police vehicle models
+        local suppressedModels = {
+            GetHashKey("police"),
+            GetHashKey("police2"),
+            GetHashKey("police3"),
+            GetHashKey("police4"),
+            GetHashKey("fbi"),
+            GetHashKey("fbi2"),
+            GetHashKey("sheriff"),
+            GetHashKey("sheriff2"),
+            GetHashKey("policet"),
+            GetHashKey("riot"),
+            GetHashKey("policeb")
+            -- Add more if needed
+        }
+
+        for _, model in ipairs(suppressedModels) do
+            SetVehicleModelIsSuppressed(model, true)
+        end
+
+        -- Periodically ensure random cops are disabled
+        while true do
+            Wait(10000)
+            SetCreateRandomCops(false)
+            SetCreateRandomCopsNotOnScenarios(false)
+            SetCreateRandomCopsOnScenarios(false)
         end
     end)
 end
