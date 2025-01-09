@@ -11,7 +11,8 @@ version '1.0.0'
 -- Client Side Scripts
 client_scripts {
     'config.lua',
-    'client/cl-restrictions.lua'
+    'client/cl-restrictions.lua',
+    'client/cl-movement.lua'
 }
 
 -- Server Side Scripts

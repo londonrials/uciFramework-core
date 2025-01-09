@@ -12,4 +12,57 @@ Make sure to restart the resource after making changes to this file to ensure th
 
 ]]-------------------------------------------------------------------------------------------------------
 
--- Load configuration
+-- Load configuration 
+local primaryKey = Config and Config.DefaultPrimaryKey or 73 
+local secondaryKey = Config and Config.DefaultSecondaryKey or 29 
+local animString = Config and Config.AnimationToPlay or {} 
+
+-- Optional: Provide fallback dictionary/clip in case config is missing or incomplete 
+-- Split the full string into two parts by "@" 
+-- If the string isn't formatted with "@", fall back to something safe. 
+local dict, clip = animString:match("([^@]+)@([^@]+)") 
+    if not dict or not clip then 
+        dict = "mp_arresting" clip = "idle" end
+
+-- Create a separate thread that listens for the configured keys, then plays the specified animation 
+CreateThread(function() 
+    -- Load the dictionary initially 
+    if not HasAnimDictLoaded(dict) then 
+        RequestAnimDict(dict) 
+        while not HasAnimDictLoaded(dict) do
+            Wait(0) 
+        end 
+    end
+    while true do
+        Wait(0)
+        -- Check if either key was just pressed
+        if IsControlJustPressed(0, primaryKey) or IsControlJustPressed(0, secondaryKey) then
+            local ped = PlayerPedId()
+            if not IsEntityDead(ped) then
+    
+                -- Re-request the dictionary in case it was flushed
+                if not HasAnimDictLoaded(dict) then
+                    RequestAnimDict(dict)
+                    while not HasAnimDictLoaded(dict) do
+                        Wait(0)
+                    end
+                end
+    
+                -- Play the animation
+                TaskPlayAnim(
+                    ped,
+                    dict,
+                    clip,
+                    8.0,   -- speed
+                    1.0,   -- speed multiplier
+                    -1,    -- duration (-1 for infinite)
+                    0,     -- flags (0 = normal)
+                    0,     -- playback rate
+                    false, -- lockX
+                    false, -- lockY
+                    false  -- lockZ
+                )
+            end
+        end
+    end
+end)           

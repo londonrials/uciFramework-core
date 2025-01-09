@@ -35,3 +35,13 @@ Config.EnableDoubleJumpNerf = true
 
 -- [Default = 2.0] Set the amount of seconds between jumps before the second jump is considered "too soon".
 Config.DoubleJumpTimeoutSeconds = 2.0
+
+------ Player Movement
+
+-- [Default = 73 & 29] Set the primary & secondary keybinds for the 'Hands Up' action.
+Config.DefaultPrimaryKey = 73
+Config.DefaultSecondaryKey = 29
+
+-- [Default = 0.5] Set the animation that plays for the 'Hands Up' action.
+Config.AnimationToPlay = "mp_arresting@idle"
+
