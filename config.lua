@@ -5,7 +5,7 @@
  | |  | | |      | |   |  __| '__/ _` | '_ ` _ \ / _ \ \ /\ / / _ \| '__| |/ / | |    / _ \| '__/ _ \
  | |__| | |____ _| |_  | |  | | | (_| | | | | | |  __/\ V  V / (_) | |  |   <  | |___| (_) | | |  __/
   \____/ \_____|_____| |_|  |_|  \__,_|_| |_| |_|\___| \_/\_/ \___/|_|  |_|\_\  \_____\___/|_|  \___|
-                                                                                                  
+                                                                                                 
 This the configuration file for UCI Framework Core. Each section represents different part of this resource along with help tips to assist in understanding the different settings.
 Make sure to restart the resource after making changes to this file to ensure the changes are live.
 /stop uciFramework-core -> /start uciFramework-core
@@ -46,5 +46,5 @@ Config.DefaultPrimaryKey = 73
 Config.DefaultSecondaryKey = 29
 
 -- [Default = 0.5] Set the animation that plays for the 'Hands Up' action.
-Config.AnimationToPlay = { dict = "missminuteman_1ig_2", name = "handsup_base" }
+Config.AnimationToPlay = { dict = "timetable@tracy@ig_5@idle_a", name = "idle_a" }
 

@@ -17,45 +17,45 @@ local primaryKey = Config and Config.DefaultPrimaryKey or 73
 local secondaryKey = Config and Config.DefaultSecondaryKey or 29 
 local animInfo = Config and Config.AnimationToPlay or {} -- Optional: Provide fallback dictionary/clip in case config is missing or incomplete 
 
-local animDict = animInfo.dict or "missminuteman_1ig_2" local animClip = animInfo.name or "handsup_base"
+local animDict = animInfo.dict or "mp_am_hold_up" local animClip = animInfo.name or "handsup_base"
 
--- Create a separate thread that listens for the configured keys, then plays the specified animation 
-CreateThread(function() 
-    -- If we want to make sure the dictionary is loaded once up front, we can. 
-    if not HasAnimDictLoaded(animDict) then 
-        RequestAnimDict(animDict) while not HasAnimDictLoaded(animDict) do 
-            Wait(0) 
-        end 
-    end
-    while true do
-        Wait(0)
-        -- Check if our primary or secondary key was just pressed
-        if IsControlJustPressed(0, primaryKey) or IsControlJustPressed(0, secondaryKey) then
-            local ped = PlayerPedId()
-            if not IsEntityDead(ped) then
-                
-                -- Re-request anim in case it was purged
-                if not HasAnimDictLoaded(animDict) then
-                    RequestAnimDict(animDict)
-                    while not HasAnimDictLoaded(animDict) do
-                        Wait(0)
-                    end
-                end
-                -- Play the animation once
-                TaskPlayAnim(
-                    ped,
-                    animDict,
-                    animClip,
-                    8.0,  -- speed
-                    1.0,  -- speed multiplier
-                    -1,   -- duration (-1 for infinite)
-                    0,    -- flags (0 = normal)
-                    0,    -- playback rate
-                    false,
-                    false,
-                    false
-                )
-            end
+-- Track whether the player currently has “hands up” active 
+local handsUpActive = false
+
+RegisterCommand("handsup", function() ToggleHandsUp() end, false)
+RegisterKeyMapping("handsup", "Put your hands up", "keyboard", primaryKey)
+RegisterKeyMapping("~!handsup", "Put your hands up", "keyboard", "B")
+
+-- This function toggles the “hands up” animation on or off function 
+ToggleHandsUp() local ped = PlayerPedId() 
+    if IsEntityDead(ped) then 
+        return 
+     end
+    if not HasAnimDictLoaded(animDict) then
+        RequestAnimDict(animDict)
+        while not HasAnimDictLoaded(animDict) do
+            Wait(0)
         end
     end
-end)           
+    
+    if handsUpActive then
+        -- If already active, clear tasks and reset
+        ClearPedTasksImmediately(ped)
+        handsUpActive = false
+    else
+        -- Otherwise play the anim indefinitely (loop)
+        TaskPlayAnim(
+            ped,
+            animDict,
+            animClip,
+            8.0,   -- speed
+            8.0,   -- speed multiplier
+            -1,    -- duration (-1 = infinite)
+            49,    -- flags (e.g., 49 = repeat/loop in place)
+            0,     -- playbackRate
+            false, -- lockX
+            false, -- lockY
+            false  -- lockZ
+        )
+        handsUpActive = true
+    end
