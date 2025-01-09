@@ -12,50 +12,40 @@ Make sure to restart the resource after making changes to this file to ensure th
 
 ]]-------------------------------------------------------------------------------------------------------
 
--- Load configuration 
-local primaryKey = Config and Config.DefaultPrimaryKey or 73 
-local secondaryKey = Config and Config.DefaultSecondaryKey or 29 
-local animInfo = Config and Config.AnimationToPlay or {} -- Optional: Provide fallback dictionary/clip in case config is missing or incomplete 
+-- Variables
+local isHandsUp = false
 
-local animDict = animInfo.dict or "mp_am_hold_up" local animClip = animInfo.name or "handsup_base"
+-- Function to toggle hands-up animation
+function toggleHandsUp(state)
+    local playerPed = PlayerPedId()
 
--- Track whether the player currently has “hands up” active 
-local handsUpActive = false
-
-RegisterCommand("handsup", function() ToggleHandsUp() end, false)
-RegisterKeyMapping("handsup", "Put your hands up", "keyboard", primaryKey)
-RegisterKeyMapping("~!handsup", "Put your hands up", "keyboard", "B")
-
--- This function toggles the “hands up” animation on or off function 
-ToggleHandsUp() local ped = PlayerPedId() 
-    if IsEntityDead(ped) then 
-        return 
-     end
-    if not HasAnimDictLoaded(animDict) then
-        RequestAnimDict(animDict)
-        while not HasAnimDictLoaded(animDict) do
+    if state and not isHandsUp then
+        -- Start the hands-up animation
+        RequestAnimDict(Config.HandsUpAnimation.dict)
+        while not HasAnimDictLoaded(Config.HandsUpAnimation.dict) do
             Wait(0)
         end
+
+        TaskPlayAnim(playerPed, Config.HandsUpAnimation.dict, Config.HandsUpAnimation.name, 3.0, -8.0, -1, 49, 0, false, false, false)
+        isHandsUp = true
+    elseif not state and isHandsUp then
+        -- Stop the hands-up animation
+        ClearPedTasks(playerPed)
+        isHandsUp = false
     end
-    
-    if handsUpActive then
-        -- If already active, clear tasks and reset
-        ClearPedTasksImmediately(ped)
-        handsUpActive = false
-    else
-        -- Otherwise play the anim indefinitely (loop)
-        TaskPlayAnim(
-            ped,
-            animDict,
-            animClip,
-            8.0,   -- speed
-            8.0,   -- speed multiplier
-            -1,    -- duration (-1 = infinite)
-            49,    -- flags (e.g., 49 = repeat/loop in place)
-            0,     -- playbackRate
-            false, -- lockX
-            false, -- lockY
-            false  -- lockZ
-        )
-        handsUpActive = true
+end
+
+-- Main thread to check for key press and release
+CreateThread(function()
+    while true do
+        Wait(0)
+
+        local isKeyPressed = IsControlPressed(0, Config.HandsUpKeybind)
+
+        if isKeyPressed then
+            toggleHandsUp(true)
+        else
+            toggleHandsUp(false)
+        end
     end
+end)

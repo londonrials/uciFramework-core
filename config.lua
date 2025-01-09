@@ -41,10 +41,8 @@ Config.DoubleJumpTimeoutSeconds = 2.0
 
 ------ Player Movement
 
--- [Default = 73 & 29] Set the primary & secondary keybinds for the 'Hands Up' action.
-Config.DefaultPrimaryKey = 73
-Config.DefaultSecondaryKey = 29
-
 -- [Default = 0.5] Set the animation that plays for the 'Hands Up' action.
-Config.AnimationToPlay = { dict = "timetable@tracy@ig_5@idle_a", name = "idle_a" }
+Config.HandsUpAnimation = { dict = "mp_am_hold_up", name = "handsup_base" }
 
+-- [Default = 73] Set the keybind for the 'Hands Up' action.
+Config.HandsUpKeybind = 73
