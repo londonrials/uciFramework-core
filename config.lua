@@ -10,6 +10,9 @@ This the configuration file for UCI Framework Core. Each section represents diff
 Make sure to restart the resource after making changes to this file to ensure the changes are live.
 /stop uciFramework-core -> /start uciFramework-core
 
+The conversions for the numbers for the keybinds can be found here: https://docs.fivem.net/docs/game-references/controls/.
+For example: 73 is the 'X' key.
+
 ]]-------------------------------------------------------------------------------------------------------
 
 Config = {}
@@ -43,5 +46,5 @@ Config.DefaultPrimaryKey = 73
 Config.DefaultSecondaryKey = 29
 
 -- [Default = 0.5] Set the animation that plays for the 'Hands Up' action.
-Config.AnimationToPlay = "mp_arresting@idle"
+Config.AnimationToPlay = { dict = "missminuteman_1ig_2", name = "handsup_base" }
 
