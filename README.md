@@ -8,6 +8,7 @@ World Restrictions:
 + Weapon Pickups are disabled.
 Player Restrictions:
 + Jumping was nerfed, no more double jumping.
++ Disabled health regeneration.
 Player Movements:
 + Player can purposely ragdoll by pressing space two times quickly.
 + Player can put their hands up by pressing X.
