@@ -17,6 +17,7 @@ local disableWeaponPickups = Config and Config.DisableWeaponPickups
 local disableWantedSystem = Config and Config.DisableWantedSystem
 local disablePoliceSpawning = Config and Config.DisablePoliceSpawning
 local disableEmsSpawning = Config and Config.DisableEmsSpawning
+local disableHealthRegen = Config and Config.DisableHealthRegen
 local enableDoubleJumpNerf = Config and Config.EnableDoubleJumpNerf
 local doubleJumpTimeoutSeconds = Config and Config.DoubleJumpTimeoutSeconds
 
@@ -120,7 +121,10 @@ if disablePoliceSpawning then
 end
 
 -- Disable random EMS peds & their vehicles if configured
-    if disableEmsSpawning then CreateThread(function() -- Disable the "Ambulance" dispatch service (service ID 5) EnableDispatchService(5, false)
+if disableEmsSpawning then 
+    CreateThread(function() 
+        -- Disable the "Ambulance" dispatch service (service ID 5) 
+        EnableDispatchService(5, false)
 
         -- Optionally disable "Fire Dept" dispatch service (service ID 3) if you wish
         EnableDispatchService(3, false)
@@ -164,21 +168,32 @@ end
     end)
 end
 
+if disableHealthRegen then
+    CreateThread(function()
+        while true do
+            Wait(0)
+            -- Disable health regeneration
+            SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
+        end
+    end)
+end
+
 if enableDoubleJumpNerf then 
-    CreateThread(function() local jumpControl = 22 -- Default jump control is key code 22 (spacebar) 
+    CreateThread(function() 
+        local jumpControl = 22 -- Default jump control is key code 22 (spacebar) 
         local lastJumpTime = 0 -- Tracks the timestamp of the most recent jump
         while true do
-                Wait(0)
-                -- Check if the jump key was just pressed
-                if IsControlJustPressed(0, jumpControl) then
-                    local now = GetGameTimer()
-                    -- If the time since last jump is less than or equal to our timeout (in ms), ragdoll the player
-                    if (now - lastJumpTime) <= (doubleJumpTimeoutSeconds * 1000) then
-                        SetPedToRagdoll(PlayerPedId(), 2000, 2000, 0, false, false, false)
-                    end
-                    -- Update jump time
-                    lastJumpTime = now
+            Wait(0)
+            -- Check if the jump key was just pressed
+            if IsControlJustPressed(0, jumpControl) then
+                local now = GetGameTimer()
+                -- If the time since last jump is less than or equal to our timeout (in ms), ragdoll the player
+                if (now - lastJumpTime) <= (doubleJumpTimeoutSeconds * 1000) then
+                    SetPedToRagdoll(PlayerPedId(), 2000, 2000, 0, false, false, false)
                 end
+                -- Update jump time
+                lastJumpTime = now
             end
+        end
     end)
 end

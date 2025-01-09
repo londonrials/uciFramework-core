@@ -39,6 +39,9 @@ Config.EnableDoubleJumpNerf = true
 -- [Default = 2.0] Set the amount of seconds between jumps before the second jump is considered "too soon".
 Config.DoubleJumpTimeoutSeconds = 2.0
 
+-- [Default = true] Set to false to disable health regeneration.
+Config.DisableHealthRegen = true
+
 ------ Player Movement
 
 -- [Default = 0.5] Set the animation that plays for the 'Hands Up' action.
